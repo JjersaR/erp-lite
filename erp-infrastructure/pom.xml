@@ -17,6 +17,7 @@
 	</properties>
 
 	<dependencies>
+    <!-- Dependencias de infrastructura -->
     <dependency>
       <groupId>com.jersa</groupId>
       <artifactId>erp-common</artifactId>
@@ -28,6 +29,31 @@
     <dependency>
       <groupId>com.jersa</groupId>
       <artifactId>erp-application</artifactId>
+    </dependency>
+    <!-- SQL -->
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <!-- MONGO -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-mongodb</artifactId>
+    </dependency>
+    <!-- REDIS -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+    <!-- CACHE -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-cache</artifactId>
     </dependency>
 	</dependencies>
 
