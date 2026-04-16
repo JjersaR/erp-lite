@@ -1,0 +1,76 @@
+package com.jersa.product;
+
+public record RStock(Integer value) {
+  public RStock {
+    if (value == null) {
+      throw new IllegalArgumentException("Stock cannot be null");
+    }
+    if (value < 0) {
+      throw new IllegalArgumentException("Stock cannot be negative");
+    }
+  }
+
+  /**
+   * Creates a Stock from an integer value.
+   *
+   * @param value the stock value
+   * @return a new Stock instance
+   */
+  public static RStock of(int value) {
+    return new RStock(value);
+  }
+
+  /**
+   * Creates a Stock with zero value.
+   *
+   * @return a new Stock instance with value 0
+   */
+  public static RStock zero() {
+    return new RStock(0);
+  }
+
+  /**
+   * Increments the stock by the specified quantity.
+   *
+   * @param quantity the quantity to add
+   * @return a new Stock instance with the incremented value
+   */
+  public RStock increment(int quantity) {
+    if (quantity < 0) {
+      throw new IllegalArgumentException("Increment quantity cannot be negative");
+    }
+    return new RStock(this.value + quantity);
+  }
+
+  /**
+   * Decrements the stock by the specified quantity.
+   *
+   * @param quantity the quantity to subtract
+   * @return a new Stock instance with the decremented value
+   * @throws IllegalArgumentException if the result would be negative
+   */
+  public RStock decrement(int quantity) {
+    if (quantity <= 0) {
+      throw new IllegalArgumentException("Decrement quantity cannot be negative");
+    }
+    int newValue = this.value - quantity;
+    if (newValue < 0) {
+      throw new IllegalArgumentException(
+          "Cannot decrement stock below zero. Current: " + this.value + ", requested: " + quantity);
+    }
+    return new RStock(newValue);
+  }
+
+  /**
+   * Checks if the stock has the required quantity available.
+   *
+   * @param required the required quantity
+   * @return true if available stock is greater than or equal to required
+   */
+  public boolean hasAvailable(int required) {
+    if (required <= 0) {
+      throw new IllegalArgumentException("Required quantity must be positive");
+    }
+    return this.value >= required;
+  }
+}
