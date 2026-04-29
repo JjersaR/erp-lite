@@ -17,56 +17,61 @@
 	</properties>
 
 	<dependencies>
-    <!-- Dependencias de infrastructura -->
-    <dependency>
-      <groupId>com.jersa</groupId>
-      <artifactId>erp-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.jersa</groupId>
-      <artifactId>erp-domain</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.jersa</groupId>
-      <artifactId>erp-application</artifactId>
-    </dependency>
-    <!-- SQL -->
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-jpa</artifactId>
-    </dependency>
-    <!-- MONGO -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-mongodb</artifactId>
-    </dependency>
-    <!-- REDIS -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-redis</artifactId>
-    </dependency>
-    <!-- CACHE -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-cache</artifactId>
-    </dependency>
-    <!-- AWS/S3 -->
-    <dependency>
-      <groupId>software.amazon.awssdk</groupId>
-      <artifactId>s3</artifactId>
-      <version>2.42.34</version>
-      <scope>compile</scope>
-    </dependency>
-    <!-- Validation -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-validation</artifactId>
-    </dependency>
+        <!-- Dependencias de infrastructura -->
+        <dependency>
+          <groupId>com.jersa</groupId>
+          <artifactId>erp-common</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>com.jersa</groupId>
+          <artifactId>erp-domain</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>com.jersa</groupId>
+          <artifactId>erp-application</artifactId>
+        </dependency>
+        <!-- SQL -->
+        <dependency>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+          <scope>runtime</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <!-- MONGO -->
+        <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+        <!-- REDIS -->
+        <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!-- CACHE -->
+        <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <!-- AWS/S3 -->
+        <dependency>
+          <groupId>software.amazon.awssdk</groupId>
+          <artifactId>s3</artifactId>
+          <version>2.42.34</version>
+          <scope>compile</scope>
+        </dependency>
+        <!-- Validation -->
+        <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <!-- WEB -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
 	</dependencies>
 
 </project>

@@ -5,7 +5,7 @@ import java.util.Optional;
 /**
  * Port for external service for JSON
  */
-public interface ICustomerProvider {
+public interface ICustomerProviderService {
 
   Optional<RCustomerInfo> findById(Long id);
 

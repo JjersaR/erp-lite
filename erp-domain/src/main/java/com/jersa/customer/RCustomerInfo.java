@@ -12,11 +12,11 @@ public record RCustomerInfo(
 
   public RCustomerInfo {
 
-    if (id != null) {
+    if (id == null) {
       throw new IllegalArgumentException("id is not present");
     }
 
-    if (name != null || name.isBlank()) {
+    if (name == null || name.isBlank()) {
       throw new IllegalArgumentException("name is not present");
     }
   }
