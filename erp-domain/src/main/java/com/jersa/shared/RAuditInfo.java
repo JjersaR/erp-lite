@@ -11,10 +11,10 @@ public record RAuditInfo(
       throw new IllegalArgumentException("Created by cannot be null or blank");
     }
     if (createdAt == null) {
-      throw new IllegalArgumentException("Created at cannot be null");
+      createdAt = Instant.now();
     }
     if (updatedAt == null) {
-      throw new IllegalArgumentException("Updated at cannot be null");
+      updatedAt = createdAt;
     }
     if (updatedAt.isBefore(createdAt)) {
       throw new IllegalArgumentException("Updated at cannot be before created at");

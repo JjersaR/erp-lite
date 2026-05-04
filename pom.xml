@@ -93,6 +93,11 @@
       <version>6.0.3</version>
       <scope>test</scope>
     </dependency>
+    <!-- Validation -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

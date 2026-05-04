@@ -1,6 +1,6 @@
 package com.jersa.persistence.rest.mappers;
 
-import com.jersa.customer.RCustomerInfo;
+import com.jersa.entities.customer.RCustomerInfo;
 import com.jersa.persistence.rest.dtos.RAddressDTO;
 import com.jersa.persistence.rest.dtos.RUserDTO;
 import org.mapstruct.Mapper;

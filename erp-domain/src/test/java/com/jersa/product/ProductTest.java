@@ -1,6 +1,10 @@
 package com.jersa.product;
 
-import com.jersa.product.events.*;
+import com.jersa.entities.product.*;
+import com.jersa.entities.product.events.RProductCreated;
+import com.jersa.entities.product.events.RProductDeactivated;
+import com.jersa.entities.product.events.RProductUpdated;
+import com.jersa.entities.product.events.RStockChanged;
 import com.jersa.shared.RMoney;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +23,7 @@ class ProductTest {
     final String msgEx = "Price cannot be null";
 
     IllegalArgumentException targetEx = assertThrows(IllegalArgumentException.class,
-        () -> Product.create(
+        () -> ProductRoot.create(
             RSKU.of("LAPTOP-001"),
             RProductName.of("Laptop"),
             "Description",
@@ -38,7 +42,7 @@ class ProductTest {
     final String msgEx = "Price must be greater than 0";
 
     IllegalArgumentException targetExZero = assertThrows(IllegalArgumentException.class,
-        () -> Product.create(
+        () -> ProductRoot.create(
             RSKU.of("LAPTOP-001"),
             RProductName.of("Laptop"),
             "Description",
@@ -62,29 +66,29 @@ class ProductTest {
     RCategoryReference category = RCategoryReference.of("cat-electronics");
     RProductImage image = RProductImage.of("https://example.com/laptop.jpg");
 
-    Product product = Product.create(sku, name, description, price, stock, category, image, "test-user");
+    ProductRoot productRoot = ProductRoot.create(sku, name, description, price, stock, category, image, "test-user");
 
-    assertNotNull(product.getId());
-    assertEquals(sku, product.getSku());
-    assertEquals(name, product.getName());
-    assertEquals(description, product.getDescription());
-    assertEquals(price, product.getPrice());
-    assertEquals(stock, product.getStock());
-    assertEquals(category, product.getCategory());
-    assertEquals(image, product.getImage());
-    assertTrue(product.isActive());
-    assertNotNull(product.getAuditInfo());
+    assertNotNull(productRoot.getId());
+    assertEquals(sku, productRoot.getSku());
+    assertEquals(name, productRoot.getName());
+    assertEquals(description, productRoot.getDescription());
+    assertEquals(price, productRoot.getPrice());
+    assertEquals(stock, productRoot.getStock());
+    assertEquals(category, productRoot.getCategory());
+    assertEquals(image, productRoot.getImage());
+    assertTrue(productRoot.isActive());
+    assertNotNull(productRoot.getAuditInfo());
 
     // Verify event registration
-    assertEquals(1, product.getDomainEvents().size());
-    assertTrue(product.getDomainEvents().get(0) instanceof RProductCreated);
+    assertEquals(1, productRoot.getDomainEvents().size());
+    assertTrue(productRoot.getDomainEvents().get(0) instanceof RProductCreated);
   }
 
   @Test
   @DisplayName("Should Update Product Information And Register ProductUpdated Event")
   void shouldUpdateProductInformationAndRegisterProductUpdatedEvent() {
-    Product product = createValidProduct();
-    product.clearDomainEvents();
+    ProductRoot productRoot = createValidProduct();
+    productRoot.clearDomainEvents();
 
     RProductName newName = RProductName.of("Updated Laptop");
     String newDescription = "Updated description";
@@ -92,35 +96,35 @@ class ProductTest {
     RCategoryReference newCategory = RCategoryReference.of("cat-computers");
     RProductImage newImage = RProductImage.of("https://example.com/new-laptop.jpg");
 
-    product.update(newName, newDescription, newPrice, newCategory, newImage);
+    productRoot.update(newName, newDescription, newPrice, newCategory, newImage);
 
-    assertEquals(newName, product.getName());
-    assertEquals(newDescription, product.getDescription());
-    assertEquals(newPrice, product.getPrice());
-    assertEquals(newCategory, product.getCategory());
-    assertEquals(newImage, product.getImage());
+    assertEquals(newName, productRoot.getName());
+    assertEquals(newDescription, productRoot.getDescription());
+    assertEquals(newPrice, productRoot.getPrice());
+    assertEquals(newCategory, productRoot.getCategory());
+    assertEquals(newImage, productRoot.getImage());
 
     // Verify event registration
-    assertEquals(1, product.getDomainEvents().size());
-    assertTrue(product.getDomainEvents().get(0) instanceof RProductUpdated);
+    assertEquals(1, productRoot.getDomainEvents().size());
+    assertTrue(productRoot.getDomainEvents().get(0) instanceof RProductUpdated);
   }
 
   @Test
   @DisplayName("Should Increment RStock And Register RStockChanged Event")
   void shouldIncrementRStockAndRegisterRStockChangedEvent() {
-    Product product = createValidProduct();
-    product.clearDomainEvents();
+    ProductRoot productRoot = createValidProduct();
+    productRoot.clearDomainEvents();
 
-    int initialRStock = product.getStock().value();
+    int initialRStock = productRoot.getStock().value();
     String reason = "Restocking from supplier";
 
-    product.incrementStock(50, reason);
+    productRoot.incrementStock(50, reason);
 
-    assertEquals(initialRStock + 50, product.getStock().value());
+    assertEquals(initialRStock + 50, productRoot.getStock().value());
 
     // Verify event registration
-    assertEquals(1, product.getDomainEvents().size());
-    RStockChanged event = (RStockChanged) product.getDomainEvents().get(0);
+    assertEquals(1, productRoot.getDomainEvents().size());
+    RStockChanged event = (RStockChanged) productRoot.getDomainEvents().get(0);
     assertEquals(initialRStock, event.oldStock());
     assertEquals(initialRStock + 50, event.newStock());
     assertEquals(reason, event.reason());
@@ -129,15 +133,15 @@ class ProductTest {
   @Test
   @DisplayName("Should Throw IllegalArgumentException When Increment Reason Is Null Or Blank")
   void shouldThrowIllegalArgumentExceptionWhenIncrementReasonIsNullOrBlank() {
-    Product product = createValidProduct();
+    ProductRoot productRoot = createValidProduct();
 
     IllegalArgumentException targetExNull = assertThrows(IllegalArgumentException.class,
-        () -> product.incrementStock(10, null));
+        () -> productRoot.incrementStock(10, null));
 
     assertEquals("Reason for stock increment cannot be null or blank", targetExNull.getMessage());
 
     IllegalArgumentException targetExBlank = assertThrows(IllegalArgumentException.class,
-        () -> product.incrementStock(10, "   "));
+        () -> productRoot.incrementStock(10, "   "));
 
     assertEquals("Reason for stock increment cannot be null or blank", targetExBlank.getMessage());
   }
@@ -145,19 +149,19 @@ class ProductTest {
   @Test
   @DisplayName("Should Decrement RStock And Register RStockChanged Event")
   void shouldDecrementRStockAndRegisterRStockChangedEvent() {
-    Product product = createValidProduct();
-    product.clearDomainEvents();
+    ProductRoot productRoot = createValidProduct();
+    productRoot.clearDomainEvents();
 
-    int initialRStock = product.getStock().value();
+    int initialRStock = productRoot.getStock().value();
     String reason = "Sold items";
 
-    product.decrementStock(20, reason);
+    productRoot.decrementStock(20, reason);
 
-    assertEquals(initialRStock - 20, product.getStock().value());
+    assertEquals(initialRStock - 20, productRoot.getStock().value());
 
     // Verify event registration
-    assertEquals(1, product.getDomainEvents().size());
-    RStockChanged event = (RStockChanged) product.getDomainEvents().get(0);
+    assertEquals(1, productRoot.getDomainEvents().size());
+    RStockChanged event = (RStockChanged) productRoot.getDomainEvents().get(0);
     assertEquals(initialRStock, event.oldStock());
     assertEquals(initialRStock - 20, event.newStock());
     assertEquals(reason, event.reason());
@@ -166,15 +170,15 @@ class ProductTest {
   @Test
   @DisplayName("Should Throw IllegalArgumentException When Decrement Reason Is Null Or Blank")
   void shouldThrowIllegalArgumentExceptionWhenDecrementReasonIsNullOrBlank() {
-    Product product = createValidProduct();
+    ProductRoot productRoot = createValidProduct();
 
     IllegalArgumentException targetExNull = assertThrows(IllegalArgumentException.class,
-        () -> product.decrementStock(10, null));
+        () -> productRoot.decrementStock(10, null));
 
     assertEquals("Reason for stock decrement cannot be null or blank", targetExNull.getMessage());
 
     IllegalArgumentException targetExBlank = assertThrows(IllegalArgumentException.class,
-        () -> product.decrementStock(10, ""));
+        () -> productRoot.decrementStock(10, ""));
 
     assertEquals("Reason for stock decrement cannot be null or blank", targetExBlank.getMessage());
   }
@@ -182,32 +186,32 @@ class ProductTest {
   @Test
   @DisplayName("Should Change Price And Register ProductUpdated Event")
   void shouldChangePriceAndRegisterProductUpdatedEvent() {
-    Product product = createValidProduct();
-    product.clearDomainEvents();
+    ProductRoot productRoot = createValidProduct();
+    productRoot.clearDomainEvents();
 
     RMoney newPrice = RMoney.of(1199.99, USD);
 
-    product.changePrice(newPrice);
+    productRoot.changePrice(newPrice);
 
-    assertEquals(newPrice, product.getPrice());
+    assertEquals(newPrice, productRoot.getPrice());
 
     // Verify event registration
-    assertEquals(1, product.getDomainEvents().size());
-    assertTrue(product.getDomainEvents().get(0) instanceof RProductUpdated);
+    assertEquals(1, productRoot.getDomainEvents().size());
+    assertTrue(productRoot.getDomainEvents().get(0) instanceof RProductUpdated);
   }
 
   @Test
   @DisplayName("Should Throw IllegalArgumentException When Changing To Null Or Invalid Price")
   void shouldThrowIllegalArgumentExceptionWhenChangingToNullOrInvalidPrice() {
-    Product product = createValidProduct();
+    ProductRoot productRoot = createValidProduct();
 
     IllegalArgumentException targetExNull = assertThrows(IllegalArgumentException.class,
-        () -> product.changePrice(null));
+        () -> productRoot.changePrice(null));
 
     assertEquals("Price cannot be null", targetExNull.getMessage());
 
     IllegalArgumentException targetExZero = assertThrows(IllegalArgumentException.class,
-        () -> product.changePrice(RMoney.of(0.0, USD)));
+        () -> productRoot.changePrice(RMoney.of(0.0, USD)));
 
     assertEquals("Price must be greater than 0", targetExZero.getMessage());
   }
@@ -215,28 +219,28 @@ class ProductTest {
   @Test
   @DisplayName("Should Deactivate Product And Register ProductDeactivated Event")
   void shouldDeactivateProductAndRegisterProductDeactivatedEvent() {
-    Product product = createValidProduct();
-    product.clearDomainEvents();
+    ProductRoot productRoot = createValidProduct();
+    productRoot.clearDomainEvents();
 
-    assertTrue(product.isActive());
+    assertTrue(productRoot.isActive());
 
-    product.deactivate();
+    productRoot.deactivate();
 
-    assertFalse(product.isActive());
+    assertFalse(productRoot.isActive());
 
     // Verify event registration
-    assertEquals(1, product.getDomainEvents().size());
-    assertTrue(product.getDomainEvents().get(0) instanceof RProductDeactivated);
+    assertEquals(1, productRoot.getDomainEvents().size());
+    assertTrue(productRoot.getDomainEvents().get(0) instanceof RProductDeactivated);
   }
 
   @Test
   @DisplayName("Should Throw IllegalStateException When Deactivating Already Deactivated Product")
   void shouldThrowIllegalStateExceptionWhenDeactivatingAlreadyDeactivatedProduct() {
-    Product product = createValidProduct();
-    product.deactivate();
+    ProductRoot productRoot = createValidProduct();
+    productRoot.deactivate();
 
     IllegalStateException targetEx = assertThrows(IllegalStateException.class,
-        () -> product.deactivate());
+        () -> productRoot.deactivate());
 
     assertEquals("Product is already deactivated", targetEx.getMessage());
   }
@@ -244,28 +248,28 @@ class ProductTest {
   @Test
   @DisplayName("Should Activate Product And Register ProductUpdated Event")
   void shouldActivateProductAndRegisterProductUpdatedEvent() {
-    Product product = createValidProduct();
-    product.deactivate();
-    product.clearDomainEvents();
+    ProductRoot productRoot = createValidProduct();
+    productRoot.deactivate();
+    productRoot.clearDomainEvents();
 
-    assertFalse(product.isActive());
+    assertFalse(productRoot.isActive());
 
-    product.activate();
+    productRoot.activate();
 
-    assertTrue(product.isActive());
+    assertTrue(productRoot.isActive());
 
     // Verify event registration
-    assertEquals(1, product.getDomainEvents().size());
-    assertTrue(product.getDomainEvents().get(0) instanceof RProductUpdated);
+    assertEquals(1, productRoot.getDomainEvents().size());
+    assertTrue(productRoot.getDomainEvents().get(0) instanceof RProductUpdated);
   }
 
   @Test
   @DisplayName("Should Throw IllegalStateException When Activating Already Active Product")
   void shouldThrowIllegalStateExceptionWhenActivatingAlreadyActiveProduct() {
-    Product product = createValidProduct();
+    ProductRoot productRoot = createValidProduct();
 
     IllegalStateException targetEx = assertThrows(IllegalStateException.class,
-        () -> product.activate());
+        () -> productRoot.activate());
 
     assertEquals("Product is already active", targetEx.getMessage());
   }
@@ -273,53 +277,53 @@ class ProductTest {
   @Test
   @DisplayName("Should Return True When Product Has Available RStock And Is Active")
   void shouldReturnTrueWhenProductHasAvailableRStockAndIsActive() {
-    Product product = createProductWithRStock(100);
+    ProductRoot productRoot = createProductWithRStock(100);
 
-    assertTrue(product.hasAvailableStock(50));
-    assertTrue(product.hasAvailableStock(100));
-    assertTrue(product.hasAvailableStock(1));
+    assertTrue(productRoot.hasAvailableStock(50));
+    assertTrue(productRoot.hasAvailableStock(100));
+    assertTrue(productRoot.hasAvailableStock(1));
   }
 
   @Test
   @DisplayName("Should Return False When Product Does Not Have Available RStock")
   void shouldReturnFalseWhenProductDoesNotHaveAvailableRStock() {
-    Product product = createProductWithRStock(50);
+    ProductRoot productRoot = createProductWithRStock(50);
 
-    assertFalse(product.hasAvailableStock(51));
-    assertFalse(product.hasAvailableStock(100));
+    assertFalse(productRoot.hasAvailableStock(51));
+    assertFalse(productRoot.hasAvailableStock(100));
   }
 
   @Test
   @DisplayName("Should Return False When Product Is Inactive Even With RStock")
   void shouldReturnFalseWhenProductIsInactiveEvenWithRStock() {
-    Product product = createProductWithRStock(100);
-    product.deactivate();
+    ProductRoot productRoot = createProductWithRStock(100);
+    productRoot.deactivate();
 
-    assertFalse(product.hasAvailableStock(10));
+    assertFalse(productRoot.hasAvailableStock(10));
   }
 
   @Test
   @DisplayName("Should Support Equals And HashCode By ID")
   void shouldSupportEqualsAndHashCodeByID() {
-    Product product1 = createValidProduct();
-    Product product2 = createValidProduct();
+    ProductRoot productRoot1 = createValidProduct();
+    ProductRoot productRoot2 = createValidProduct();
 
     // Different products should not be equal
-    assertNotEquals(product1, product2);
-    assertNotEquals(product1.getId(), product2.getId());
+    assertNotEquals(productRoot1, productRoot2);
+    assertNotEquals(productRoot1.getId(), productRoot2.getId());
   }
 
   @Test
   @DisplayName("Should Have A Non Null ToString")
   void shouldHaveANonNullToString() {
-    Product product = createValidProduct();
+    ProductRoot productRoot = createValidProduct();
 
-    assertNotNull(product.toString());
-    assertFalse(product.toString().isEmpty());
+    assertNotNull(productRoot.toString());
+    assertFalse(productRoot.toString().isEmpty());
   }
 
-  private Product createValidProduct() {
-    return Product.create(
+  private ProductRoot createValidProduct() {
+    return ProductRoot.create(
         RSKU.of("LAPTOP-001"),
         RProductName.of("Laptop Computer"),
         "High-performance laptop",
@@ -330,8 +334,8 @@ class ProductTest {
         "test-user");
   }
 
-  private Product createProductWithRStock(int stockAmount) {
-    return Product.create(
+  private ProductRoot createProductWithRStock(int stockAmount) {
+    return ProductRoot.create(
         RSKU.of("MOUSE-001"),
         RProductName.of("Wireless Mouse"),
         "Ergonomic wireless mouse",

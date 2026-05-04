@@ -1,6 +1,7 @@
 package com.jersa.order;
 
-import com.jersa.product.*;
+import com.jersa.entities.order.OrderItem;
+import com.jersa.entities.product.*;
 import com.jersa.shared.RMoney;
 import com.jersa.shared.RQuantity;
 import org.junit.jupiter.api.DisplayName;
@@ -30,10 +31,10 @@ class OrderItemTest {
   @DisplayName("Should Throw IllegalArgumentException When RQuantity Is Null")
   void shouldThrowIllegalArgumentExceptionWhenRQuantityIsNull() {
     final String msgEx = "Quantity cannot be null";
-    Product product = createValidProduct();
+    ProductRoot productRoot = createValidProduct();
 
     IllegalArgumentException targetEx = assertThrows(IllegalArgumentException.class,
-        () -> OrderItem.from(product, null));
+        () -> OrderItem.from(productRoot, null));
 
     assertEquals(msgEx, targetEx.getMessage());
   }
@@ -41,12 +42,12 @@ class OrderItemTest {
   @Test
   @DisplayName("Should Throw IllegalArgumentException When Product Is Inactive")
   void shouldThrowIllegalArgumentExceptionWhenProductIsInactive() {
-    Product product = createValidProduct();
-    product.deactivate();
+    ProductRoot productRoot = createValidProduct();
+    productRoot.deactivate();
     RQuantity quantity = RQuantity.of(5);
 
     IllegalArgumentException targetEx = assertThrows(IllegalArgumentException.class,
-        () -> OrderItem.from(product, quantity));
+        () -> OrderItem.from(productRoot, quantity));
 
     assertTrue(targetEx.getMessage().contains("Cannot create order item for inactive product"));
   }
@@ -54,11 +55,11 @@ class OrderItemTest {
   @Test
   @DisplayName("Should Throw IllegalArgumentException When Product Has Insufficient Stock")
   void shouldThrowIllegalArgumentExceptionWhenProductHasInsufficientStock() {
-    Product product = createProductWithStock(5);
+    ProductRoot productRoot = createProductWithStock(5);
     RQuantity quantity = RQuantity.of(10);
 
     IllegalArgumentException targetEx = assertThrows(IllegalArgumentException.class,
-        () -> OrderItem.from(product, quantity));
+        () -> OrderItem.from(productRoot, quantity));
 
     assertTrue(targetEx.getMessage().contains("Insufficient stock for product"));
     assertTrue(targetEx.getMessage().contains("Required: 10"));
@@ -68,37 +69,37 @@ class OrderItemTest {
   @Test
   @DisplayName("Should Create OrderItem With Valid Product And RQuantity")
   void shouldCreateOrderItemWithValidProductAndRQuantity() {
-    Product product = createValidProduct();
+    ProductRoot productRoot = createValidProduct();
     RQuantity quantity = RQuantity.of(5);
 
-    OrderItem orderItem = OrderItem.from(product, quantity);
+    OrderItem orderItem = OrderItem.from(productRoot, quantity);
 
     assertNotNull(orderItem.getId());
-    assertEquals(product.getId(), orderItem.getProductReference());
-    assertEquals(product.getName().value(), orderItem.getProductName());
+    assertEquals(productRoot.getId(), orderItem.getProductReference());
+    assertEquals(productRoot.getName().value(), orderItem.getProductName());
     assertEquals(quantity, orderItem.getQuantity());
-    assertEquals(product.getPrice(), orderItem.getUnitPrice());
-    assertEquals(product.getPrice().multiply(quantity), orderItem.getSubtotal());
+    assertEquals(productRoot.getPrice(), orderItem.getUnitPrice());
+    assertEquals(productRoot.getPrice().multiply(quantity), orderItem.getSubtotal());
   }
 
   @Test
   @DisplayName("Should Capture Product Name And Price As Snapshot")
   void shouldCaptureProductNameAndPriceAsSnapshot() {
-    Product product = createValidProduct();
+    ProductRoot productRoot = createValidProduct();
     RQuantity quantity = RQuantity.of(3);
-    RMoney originalPrice = product.getPrice();
-    String originalName = product.getName().value();
+    RMoney originalPrice = productRoot.getPrice();
+    String originalName = productRoot.getName().value();
 
-    OrderItem orderItem = OrderItem.from(product, quantity);
+    OrderItem orderItem = OrderItem.from(productRoot, quantity);
 
     // Modify product after order item creation
-    product.changePrice(RMoney.of(999.99, USD));
-    product.update(
+    productRoot.changePrice(RMoney.of(999.99, USD));
+    productRoot.update(
         RProductName.of("Modified Product Name"),
         "New Description",
-        product.getPrice(),
-        product.getCategory(),
-        product.getImage());
+        productRoot.getPrice(),
+        productRoot.getCategory(),
+        productRoot.getImage());
 
     // OrderItem should preserve original values
     assertEquals(originalName, orderItem.getProductName());
@@ -109,12 +110,12 @@ class OrderItemTest {
   @Test
   @DisplayName("Should Calculate Subtotal Correctly")
   void shouldCalculateSubtotalCorrectly() {
-    Product product = createValidProduct();
+    ProductRoot productRoot = createValidProduct();
     RQuantity quantity = RQuantity.of(4);
 
-    OrderItem orderItem = OrderItem.from(product, quantity);
+    OrderItem orderItem = OrderItem.from(productRoot, quantity);
 
-    RMoney expectedSubtotal = product.getPrice().multiply(quantity);
+    RMoney expectedSubtotal = productRoot.getPrice().multiply(quantity);
     assertEquals(expectedSubtotal, orderItem.calculateSubtotal());
     assertEquals(expectedSubtotal, orderItem.getSubtotal());
   }
@@ -122,10 +123,10 @@ class OrderItemTest {
   @Test
   @DisplayName("Should Create OrderItem With Exact Stock Available")
   void shouldCreateOrderItemWithExactStockAvailable() {
-    Product product = createProductWithStock(10);
+    ProductRoot productRoot = createProductWithStock(10);
     RQuantity quantity = RQuantity.of(10);
 
-    OrderItem orderItem = assertDoesNotThrow(() -> OrderItem.from(product, quantity));
+    OrderItem orderItem = assertDoesNotThrow(() -> OrderItem.from(productRoot, quantity));
 
     assertEquals(quantity, orderItem.getQuantity());
   }
@@ -133,11 +134,11 @@ class OrderItemTest {
   @Test
   @DisplayName("Should Support Equals And HashCode By ID")
   void shouldSupportEqualsAndHashCodeByID() {
-    Product product = createValidProduct();
+    ProductRoot productRoot = createValidProduct();
     RQuantity quantity = RQuantity.of(5);
 
-    OrderItem orderItem1 = OrderItem.from(product, quantity);
-    OrderItem orderItem2 = OrderItem.from(product, quantity);
+    OrderItem orderItem1 = OrderItem.from(productRoot, quantity);
+    OrderItem orderItem2 = OrderItem.from(productRoot, quantity);
 
     // Different instances with different IDs should not be equal
     assertNotEquals(orderItem1, orderItem2);
@@ -147,17 +148,17 @@ class OrderItemTest {
   @Test
   @DisplayName("Should Have A Non Null ToString")
   void shouldHaveANonNullToString() {
-    Product product = createValidProduct();
+    ProductRoot productRoot = createValidProduct();
     RQuantity quantity = RQuantity.of(5);
 
-    OrderItem orderItem = OrderItem.from(product, quantity);
+    OrderItem orderItem = OrderItem.from(productRoot, quantity);
 
     assertNotNull(orderItem.toString());
     assertFalse(orderItem.toString().isEmpty());
   }
 
-  private Product createValidProduct() {
-    return Product.create(
+  private ProductRoot createValidProduct() {
+    return ProductRoot.create(
         RSKU.of("LAPTOP-001"),
         RProductName.of("Laptop Computer"),
         "High-performance laptop",
@@ -168,8 +169,8 @@ class OrderItemTest {
         "test-user");
   }
 
-  private Product createProductWithStock(int stockAmount) {
-    return Product.create(
+  private ProductRoot createProductWithStock(int stockAmount) {
+    return ProductRoot.create(
         RSKU.of("MOUSE-001"),
         RProductName.of("Wireless Mouse"),
         "Ergonomic wireless mouse",

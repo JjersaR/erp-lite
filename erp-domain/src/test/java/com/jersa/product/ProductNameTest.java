@@ -1,5 +1,6 @@
 package com.jersa.product;
 
+import com.jersa.entities.product.RProductName;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

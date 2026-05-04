@@ -6,13 +6,10 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import org.hibernate.annotations.UuidGenerator;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
@@ -33,8 +30,6 @@ import lombok.Setter;
 @Builder
 public class OrderEntity {
   @Id
-  @GeneratedValue
-  @UuidGenerator
   @Column(name = "id", nullable = false, updatable = false, columnDefinition = "uuid")
   private UUID id;
 
@@ -50,7 +45,7 @@ public class OrderEntity {
   @Column(name = "created_by", nullable = false, length = 100)
   private String createdBy;
 
-  @Column(name = "order_date", nullable = false, columnDefinition = "timestamp without time zone")
+  @Column(name = "order_date", nullable = false, columnDefinition = "timestamp without time zone", updatable = false)
   private LocalDateTime orderDate;
 
   @Column(name = "status", nullable = false, length = 20)

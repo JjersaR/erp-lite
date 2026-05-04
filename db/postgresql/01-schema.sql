@@ -68,7 +68,7 @@ CREATE TABLE order_products (
     id           UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     order_id     UUID        NOT NULL,
     product_id   UUID        NOT NULL,
-    product_name VARCHAR(200) NOT NULL, -- Snapshot of product name at order creation
+    product_name VARCHAR(200) NOT NULL, -- Snapshot of productRoot name at orderRoot creation
     quantity     INT          NOT NULL CHECK (quantity > 0),
     unit_price   DECIMAL(15, 2) NOT NULL CHECK (unit_price >= 0),
     subtotal     DECIMAL(15, 2) NOT NULL CHECK (subtotal >= 0),

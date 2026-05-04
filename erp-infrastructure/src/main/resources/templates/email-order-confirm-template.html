@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmación de Orden</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0; padding:0; font-family: Arial, sans-serif; background-color:#f4f4f4;">
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+        <td align="center">
+
+            <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff; margin:20px; border-radius:8px; overflow:hidden;">
+
+                <!-- Header -->
+                <tr>
+                    <td style="background-color:#09C85F; padding:20px; text-align:center; color:#ffffff;">
+                        <h1 style="margin:0; font-size:24px;">¡Gracias por tu compra!</h1>
+                    </td>
+                </tr>
+
+                <!-- Body -->
+                <tr>
+                    <td style="padding:30px; color:#333333;">
+
+                        <p style="font-size:16px;">Hola <strong>{{customerName}}</strong>,</p>
+
+                        <p style="font-size:16px;">
+                            Hemos recibido tu orden correctamente. A continuación encontrarás los detalles de tu compra:
+                        </p>
+
+                        <!-- Order Details -->
+                        <table width="100%" cellpadding="10" cellspacing="0" border="0" style="margin-top:20px; border:1px solid #e5e7eb; border-radius:6px;">
+                            <tr>
+                                <td style="background-color:#f9fafb;"><strong>Número de Orden</strong></td>
+                                <td>{{orderNumber}}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color:#f9fafb;"><strong>ID de Orden</strong></td>
+                                <td>{{orderId}}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color:#f9fafb;"><strong>Fecha</strong></td>
+                                <td>{{orderDate}}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color:#f9fafb;"><strong>Total de artículos</strong></td>
+                                <td>{{itemsCount}}</td>
+                            </tr>
+                            <tr>
+                                <td style="background-color:#f9fafb;"><strong>Total pagado</strong></td>
+                                <td><strong>{{currency}} {{totalAmount}}</strong></td>
+                            </tr>
+                        </table>
+
+                        <p style="margin-top:25px; font-size:16px;">
+                            Estamos preparando tu pedido y pronto recibirás más información sobre el envío.
+                        </p>
+
+                        <p style="font-size:16px;">
+                            Si tienes alguna duda, puedes responder a este correo y con gusto te ayudaremos.
+                        </p>
+
+                    </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                    <td style="background-color:#0F172A; color:#ffffff; text-align:center; padding:20px; font-size:14px;">
+                        <p style="margin:0;">© {{year}} {{companyName}}</p>
+                        <p style="margin:5px 0 0 0;">Este es un correo automático, por favor no respondas directamente.</p>
+                    </td>
+                </tr>
+
+            </table>
+
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

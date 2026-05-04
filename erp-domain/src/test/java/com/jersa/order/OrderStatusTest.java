@@ -1,5 +1,6 @@
 package com.jersa.order;
 
+import com.jersa.entities.order.ROrderStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
