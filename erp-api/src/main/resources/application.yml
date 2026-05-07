@@ -39,6 +39,11 @@ spring:
           max-active: 8
           max-idle: 8
           min-idle: 0
+  cache:
+    type: redis
+    redis:
+      time-to-live: 86400000
+      cache-null-values: false
 
   mongodb:
     uri: mongodb://jersa:jersaBP56@localhost:27017/erp_catalog_db?authSource=admin

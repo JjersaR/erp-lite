@@ -1,17 +1,17 @@
 package com.jersa.ports.repositories;
 
+import com.jersa.enums.ECatalogType;
+import com.jersa.views.RCatalogView;
+import com.jersa.views.RItemsView;
+
 import java.util.List;
 import java.util.Optional;
 
-import com.jersa.entities.catalog.CatalogRoot;
-import com.jersa.entities.catalog.CatalogItem;
-import com.jersa.entities.catalog.ECatalogType;
-
 public interface ICatalogRepositoryPort {
 
-  Optional<CatalogRoot> findByType(ECatalogType type);
+  Optional<RCatalogView> findByType(ECatalogType type);
 
-  List<CatalogItem> findItemsByType(ECatalogType type);
+  List<RItemsView> findItemsByType(ECatalogType type);
 
-  Optional<CatalogItem> findItemByTypeAndCode(ECatalogType type, String code);
+  Optional<RItemsView> findItemByTypeAndCode(ECatalogType type, String code);
 }

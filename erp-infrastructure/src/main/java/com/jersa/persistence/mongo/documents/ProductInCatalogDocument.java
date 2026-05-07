@@ -3,6 +3,7 @@ package com.jersa.persistence.mongo.documents;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,12 +14,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Document(collection = "product_documents")
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
 @Builder
+@Document(collection = "product_documents")
 public class ProductInCatalogDocument {
   @Id
   private String id;
@@ -45,7 +46,7 @@ public class ProductInCatalogDocument {
 
   private String sku;
 
-  private RProductSpecifications specifications;
+  private Map<String, Object> specifications;
 
   private int stock;
 

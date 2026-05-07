@@ -3,6 +3,7 @@ package com.jersa.persistence.mongo.documents;
 import java.time.Instant;
 import java.util.List;
 
+import com.jersa.enums.ECatalogType;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import jakarta.persistence.Id;
