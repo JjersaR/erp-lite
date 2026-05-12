@@ -1,5 +1,6 @@
 package com.jersa.queries.product;
 
+import com.jersa.exceptions.QueryException;
 import com.jersa.ports.repositories.IProductCatalogRepositoryPort;
 import com.jersa.views.RProductView;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,10 @@ public class FindProductBySkuQuery {
 
     public Optional<RProductView> execute(String sku) {
         log.info("Executing FindProductBySkuQuery");
-        return this.repository.findBySKU(sku);
+        try {
+            return this.repository.findBySKU(sku);
+        } catch (RuntimeException e) {
+            throw new QueryException("Error executing FindProductBySkuQuery");
+        }
     }
 }

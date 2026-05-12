@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record RUpdateStockCommand(
-        @NotBlank(message = "Product ID cannot be null or blank")
         String productId,
         @NotNull(message = "Quantity cannot be null")
         Integer quantity,

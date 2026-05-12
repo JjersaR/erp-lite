@@ -1,5 +1,6 @@
 package com.jersa.queries.product;
 
+import com.jersa.exceptions.QueryException;
 import com.jersa.ports.repositories.IProductCatalogRepositoryPort;
 import com.jersa.views.RProductView;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,10 @@ public class FindProductByCategoryQuery {
 
     public List<RProductView> execute(String category) {
         log.info("Executing FindProductByActiveQuery");
-        return this.repository.findByCategory(category);
+        try {
+            return this.repository.findByCategory(category);
+        } catch (RuntimeException e) {
+            throw new QueryException("Error executing FindProductByActiveQuery");
+        }
     }
 }

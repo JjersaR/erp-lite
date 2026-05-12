@@ -1,5 +1,6 @@
 package com.jersa.queries.product;
 
+import com.jersa.exceptions.QueryException;
 import com.jersa.ports.repositories.IProductCatalogRepositoryPort;
 import com.jersa.views.RProductView;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,10 @@ public class FindProductByIdQuery {
 
     public Optional<RProductView> execute(String id) {
         log.info("Executing FindProductByIdQuery");
-        return this.repository.findById(id);
+        try {
+            return this.repository.findById(id);
+        } catch (RuntimeException e) {
+            throw new QueryException("Error executing FindProductByIdQuery");
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.jersa.queries.product;
 
+import com.jersa.exceptions.QueryException;
 import com.jersa.ports.repositories.IProductCatalogRepositoryPort;
 import com.jersa.views.RProductView;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,10 @@ public class FindProductByTextQuery {
 
     public List<RProductView> execute(String text) {
         log.info("Executing FindProductByTextQuery");
-        return this.repository.findByText(text);
+        try {
+            return this.repository.findByText(text);
+        } catch (RuntimeException e) {
+            throw new QueryException("Error executing FindProductByTextQuery");
+        }
     }
 }

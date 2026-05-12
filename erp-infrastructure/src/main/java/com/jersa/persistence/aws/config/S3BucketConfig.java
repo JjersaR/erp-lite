@@ -12,25 +12,28 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3Configuration;
 
+import java.net.URI;
+
 @Slf4j
 @Configuration
 public class S3BucketConfig {
 
-  @Bean
-  public S3Client s3Client(RAwsS3Properties props) {
-    log.info("Configuring AWS S3 Bucket");
+    @Bean
+    public S3Client s3Client(RAwsS3Properties props) {
+        log.info("Configuring AWS S3 Bucket");
 
-    var credentials = AwsBasicCredentials.create(props.accessKey(), props.secretKey());
+        var credentials = AwsBasicCredentials.create(props.accessKey(), props.secretKey());
 
-    var s3Config = S3Configuration.builder()
-        .pathStyleAccessEnabled(props.pathStyleEnabled())
-        .build();
+        var s3Config = S3Configuration.builder()
+                .pathStyleAccessEnabled(props.pathStyleEnabled())
+                .build();
 
-    var s3ClientBuilder = S3Client.builder()
-        .region(Region.of(props.region()))
-        .credentialsProvider(StaticCredentialsProvider.create(credentials))
-        .serviceConfiguration(s3Config);
+        var s3ClientBuilder = S3Client.builder()
+                .endpointOverride(URI.create(props.endpoint()))
+                .region(Region.of(props.region()))
+                .credentialsProvider(StaticCredentialsProvider.create(credentials))
+                .serviceConfiguration(s3Config);
 
-    return s3ClientBuilder.build();
-  }
+        return s3ClientBuilder.build();
+    }
 }

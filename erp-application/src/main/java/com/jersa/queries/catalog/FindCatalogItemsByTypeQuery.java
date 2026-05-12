@@ -1,6 +1,7 @@
 package com.jersa.queries.catalog;
 
 import com.jersa.enums.ECatalogType;
+import com.jersa.exceptions.QueryException;
 import com.jersa.ports.repositories.ICatalogRepositoryPort;
 import com.jersa.views.RItemsView;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,10 @@ public class FindCatalogItemsByTypeQuery {
 
     public List<RItemsView> execute(ECatalogType type) {
         log.info("Executing FindCatalogItemsByTypeQuery");
-        return this.repository.findItemsByType(type);
+        try {
+            return this.repository.findItemsByType(type);
+        } catch (RuntimeException e) {
+            throw new QueryException("Error executing FindCatalogItemsByTypeQuery");
+        }
     }
 }

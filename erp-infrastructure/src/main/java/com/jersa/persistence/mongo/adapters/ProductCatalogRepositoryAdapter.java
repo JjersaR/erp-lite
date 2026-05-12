@@ -52,7 +52,7 @@ public class ProductCatalogRepositoryAdapter implements IProductCatalogRepositor
                 return Optional.of(productCache);
             }
         }
-        return this.productInCatalogDocumentRepository.findById(sku).map(mapper::toView);
+        return this.productInCatalogDocumentRepository.findBySku(sku).map(mapper::toView);
     }
 
     @Override

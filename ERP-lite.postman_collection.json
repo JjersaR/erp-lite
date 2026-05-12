@@ -1,0 +1,560 @@
+{
+  "info": {
+    "_postman_id": "f15dfcd9-319c-4088-9b12-9d1d5dfb3fec",
+    "name": "ERP-lite",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "6302478"
+  },
+  "item": [
+    {
+      "name": "Queries",
+      "item": [
+        {
+          "name": "ProductsById",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Api-Version",
+                "value": "1",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}{{QUERY_PRODUCTS}}/11111111-1111-1111-1111-111111111111",
+              "host": [
+                "{{BASE_URL}}{{QUERY_PRODUCTS}}"
+              ],
+              "path": [
+                "11111111-1111-1111-1111-111111111111"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ProductsBySky",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Api-Version",
+                "value": "1",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}{{QUERY_PRODUCTS}}/11111111-1111-1111-1111-111111111111",
+              "host": [
+                "{{BASE_URL}}{{QUERY_PRODUCTS}}"
+              ],
+              "path": [
+                "11111111-1111-1111-1111-111111111111"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ProductsActice",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Api-Version",
+                "value": "1",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}{{QUERY_PRODUCTS}}/11111111-1111-1111-1111-111111111111",
+              "host": [
+                "{{BASE_URL}}{{QUERY_PRODUCTS}}"
+              ],
+              "path": [
+                "11111111-1111-1111-1111-111111111111"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ProductsByText",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Api-Version",
+                "value": "1",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}{{QUERY_PRODUCTS}}/search?text=hp",
+              "host": [
+                "{{BASE_URL}}{{QUERY_PRODUCTS}}"
+              ],
+              "path": [
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "text",
+                  "value": "hp"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ProductsByCategoryId",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Api-Version",
+                "value": "1",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}{{QUERY_PRODUCTS}}?category=cat-electronics",
+              "host": [
+                "{{BASE_URL}}{{QUERY_PRODUCTS}}"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "cat-electronics"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CatalogByType",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Api-Version",
+                "value": "1",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}{{QUERY_CATALOGS}}/COUNTRIES",
+              "host": [
+                "{{BASE_URL}}{{QUERY_CATALOGS}}"
+              ],
+              "path": [
+                "COUNTRIES"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CatalogItemsByType",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Api-Version",
+                "value": "1",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}{{QUERY_CATALOGS}}/COUNTRIES/items",
+              "host": [
+                "{{BASE_URL}}{{QUERY_CATALOGS}}"
+              ],
+              "path": [
+                "COUNTRIES",
+                "items"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CatalogItemsByTypeAndCode",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-Api-Version",
+                "value": "1",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}{{QUERY_CATALOGS}}/SHIPPING_METHODS/items?code=STANDARD",
+              "host": [
+                "{{BASE_URL}}{{QUERY_CATALOGS}}"
+              ],
+              "path": [
+                "SHIPPING_METHODS",
+                "items"
+              ],
+              "query": [
+                {
+                  "key": "code",
+                  "value": "STANDARD"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Commands",
+      "item": [
+        {
+          "name": "CommandProduct",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const locationHeader = pm.response.headers.get(\"Location\");",
+                  "",
+                  "if (locationHeader) {",
+                  "",
+                  "    const productId = locationHeader.split(\"/\").pop();",
+                  "",
+                  "    pm.collectionVariables.set(\"PRODUCT_ID\", productId);",
+                  "",
+                  "    console.log(\"Product ID:\", productId);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Version",
+                "value": "1",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "type": "text",
+                  "contentType": "application/json",
+                  "key": "product",
+                  "value": "{\n  \"sku\":\"LAPTOP-123\",\n  \"name\":\"Dell XPS 15\",\n  \"description\":\"High-performance laptop with Intel i7\",\n  \"price\":1499.99,\n  \"currency\":\"USD\",\n  \"stock\":25,\n  \"categoryId\":\"cat-electronics\",\n  \"createdBy\":\"admin\"\n}"
+                },
+                {
+                  "type": "file",
+                  "key": "image",
+                  "src": "postman-cloud:///1f11cc9d-7c06-4330-95db-ea5e30d9bc5f"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{BASE_URL}}{{COMMAND_PRODUCTS}}",
+              "host": [
+                "{{BASE_URL}}{{COMMAND_PRODUCTS}}"
+              ]
+            },
+            "description": "Generated from cURL: curl --location 'http://localhost:9090/command/products' \\\n--header 'X-API-Version: 1' \\\n--form 'product={\n  \"sku\":\"LAPTOP-111\",\n  \"name\":\"Dell XPS 15\",\n  \"description\":\"High-performance laptop with Intel i7\",\n  \"price\":1499.99,\n  \"currency\":\"USD\",\n  \"stock\":25,\n  \"categoryId\":\"cat-electronics\",\n  \"createdBy\":\"admin\"\n};type=application/json' \\\n--form 'image=@/ruta/real/imagen.jpg'"
+          },
+          "response": []
+        },
+        {
+          "name": "CommandProduct",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-API-Version",
+                "value": "1",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "type": "text",
+                  "contentType": "application/json",
+                  "key": "product",
+                  "value": "{\n  \"name\":\"Dell Updated\",\n  \"description\":\"Was updated\",\n  \"price\":1499.88,\n  \"categoryId\":\"cat-electronics\"\n}"
+                },
+                {
+                  "type": "file",
+                  "key": "image",
+                  "src": "postman-cloud:///1f11ccbb-150f-4e10-9d77-1719c6c75cd1"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{BASE_URL}}{{COMMAND_PRODUCTS}}/{{PRODUCT_ID}}",
+              "host": [
+                "{{BASE_URL}}{{COMMAND_PRODUCTS}}"
+              ],
+              "path": [
+                "{{PRODUCT_ID}}"
+              ]
+            },
+            "description": "Generated from cURL: curl --location 'http://localhost:9090/command/products' \\\n--header 'X-API-Version: 1' \\\n--form 'product={\n  \"sku\":\"LAPTOP-111\",\n  \"name\":\"Dell XPS 15\",\n  \"description\":\"High-performance laptop with Intel i7\",\n  \"price\":1499.99,\n  \"currency\":\"USD\",\n  \"stock\":25,\n  \"categoryId\":\"cat-electronics\",\n  \"createdBy\":\"admin\"\n};type=application/json' \\\n--form 'image=@/ruta/real/imagen.jpg'"
+          },
+          "response": []
+        },
+        {
+          "name": "PatchProductDeactivate",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}{{COMMAND_PRODUCTS}}/{{PRODUCT_ID}}/deactivate",
+              "host": [
+                "{{BASE_URL}}{{COMMAND_PRODUCTS}}"
+              ],
+              "path": [
+                "{{PRODUCT_ID}}",
+                "deactivate"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PatchProductStock",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"quantity\": 555,\n    \"reason\": \"New batch come\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}{{COMMAND_PRODUCTS}}/{{PRODUCT_ID}}/stock",
+              "host": [
+                "{{BASE_URL}}{{COMMAND_PRODUCTS}}"
+              ],
+              "path": [
+                "{{PRODUCT_ID}}",
+                "stock"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CommandOrder",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const locationHeader = pm.response.headers.get(\"Location\");",
+                  "",
+                  "if (locationHeader) {",
+                  "",
+                  "    const orderId = locationHeader.split(\"/\").pop();",
+                  "",
+                  "    pm.collectionVariables.set(\"ORDER_ID\", orderId);",
+                  "",
+                  "    console.log(\"Order ID:\", orderId);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": 3,\n  \"items\": [\n    {\n      \"productId\": \"33333333-3333-3333-3333-333333333333\",\n      \"quantity\": 2\n    },\n    {\n      \"productId\": \"77777777-7777-7777-7777-777777777777\",\n      \"quantity\": 1\n    },\n    {\n      \"productId\": \"cccccccc-cccc-cccc-cccc-cccccccccccc\",\n      \"quantity\": 3\n    }\n  ],\n  \"createdBy\": \"admin\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}{{COMMAND_ORDERS}}",
+              "host": [
+                "{{BASE_URL}}{{COMMAND_ORDERS}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CommandOrderCancel",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const locationHeader = pm.response.headers.get(\"Location\");",
+                  "",
+                  "if (locationHeader) {",
+                  "",
+                  "    const orderId = locationHeader.split(\"/\").pop();",
+                  "",
+                  "    pm.collectionVariables.set(\"ORDER_ID\", orderId);",
+                  "",
+                  "    console.log(\"Order ID:\", orderId);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}{{COMMAND_ORDERS}}/{{ORDER_ID}}/cancel?reason=Get better price",
+              "host": [
+                "{{BASE_URL}}{{COMMAND_ORDERS}}"
+              ],
+              "path": [
+                "{{ORDER_ID}}",
+                "cancel"
+              ],
+              "query": [
+                {
+                  "key": "reason",
+                  "value": "Get better price"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CommandOrderStatus",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const locationHeader = pm.response.headers.get(\"Location\");",
+                  "",
+                  "if (locationHeader) {",
+                  "",
+                  "    const orderId = locationHeader.split(\"/\").pop();",
+                  "",
+                  "    pm.collectionVariables.set(\"ORDER_ID\", orderId);",
+                  "",
+                  "    console.log(\"Order ID:\", orderId);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}{{COMMAND_ORDERS}}/{{ORDER_ID}}/cancel?status=SHIPPED",
+              "host": [
+                "{{BASE_URL}}{{COMMAND_ORDERS}}"
+              ],
+              "path": [
+                "{{ORDER_ID}}",
+                "cancel"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "SHIPPED"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "pm.request.headers.add({",
+          "    key: \"X-Api-Version\",",
+          "    value: \"1\"",
+          "});"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": ""
+    },
+    {
+      "key": "QUERY_PRODUCTS",
+      "value": ""
+    },
+    {
+      "key": "QUERY_CATALOGS",
+      "value": ""
+    },
+    {
+      "key": "COMMAND_PRODUCTS",
+      "value": ""
+    },
+    {
+      "key": "COMMAND_ORDERS",
+      "value": ""
+    },
+    {
+      "key": "PRODUCT_ID",
+      "value": ""
+    },
+    {
+      "key": "ORDER_ID",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}
