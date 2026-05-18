@@ -6,9 +6,9 @@ import com.jersa.ports.repositories.IProductCatalogRepositoryPort;
 import com.jersa.views.RProductView;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,20 +21,18 @@ import static com.jersa.constants.CacheConstants.*;
 public class ProductCatalogRepositoryAdapter implements IProductCatalogRepositoryPort {
     private final IProductInCatalogDocumentRepository productInCatalogDocumentRepository;
     private final IProductCatalogMapper mapper;
-    private final CacheManager cacheManager;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final ObjectMapper objectMapper;
 
     @Override
     public Optional<RProductView> findById(String id) {
         log.info("Finding product by id {}", id);
 
-        Cache cache = cacheManager.getCache(CACHE_PRODUCTS_BY_ID);
+        Object raw = this.redisTemplate.opsForValue().get(CACHE_PRODUCTS_BY_ID + id);
 
-        if (cache != null) {
-            RProductView productCache = cache.get(id, RProductView.class);
-            if (productCache != null) {
-                log.info("Found product in cache by id");
-                return Optional.of(productCache);
-            }
+        if (raw != null) {
+            log.info("Found product by id in cache {}", id);
+            return Optional.of(this.objectMapper.convertValue(raw, RProductView.class));
         }
         return this.productInCatalogDocumentRepository.findById(id).map(mapper::toView);
     }
@@ -43,14 +41,11 @@ public class ProductCatalogRepositoryAdapter implements IProductCatalogRepositor
     public Optional<RProductView> findBySKU(String sku) {
         log.info("Finding product by sku {}", sku);
 
-        Cache cache = cacheManager.getCache(CACHE_PRODUCTS_BY_SKU);
+        Object raw = this.redisTemplate.opsForValue().get(CACHE_PRODUCTS_BY_SKU + sku);
 
-        if (cache != null) {
-            RProductView productCache = cache.get(sku, RProductView.class);
-            if (productCache != null) {
-                log.info("Found product in cache by sku");
-                return Optional.of(productCache);
-            }
+        if (raw != null) {
+            log.info("Found product by sku in cache {}", sku);
+           return Optional.of(this.objectMapper.convertValue(raw, RProductView.class));
         }
         return this.productInCatalogDocumentRepository.findBySku(sku).map(mapper::toView);
     }
@@ -65,14 +60,11 @@ public class ProductCatalogRepositoryAdapter implements IProductCatalogRepositor
     public List<RProductView> findByCategory(String category) {
         log.info("Finding product by category {}", category);
 
-        Cache cache = cacheManager.getCache(CACHE_PRODUCTS_BY_CATEGORY);
+        Object raw = this.redisTemplate.opsForList().range(CACHE_PRODUCTS_BY_CATEGORY + category, 0, -1);
 
-        if (cache != null) {
-            List<RProductView> productsCache = cache.get(category, List.class);
-            if (productsCache != null) {
-                log.info("Found products in cache");
-                return productsCache;
-            }
+        if (raw != null) {
+            log.info("Found product by category in cache {}", category);
+            return this.objectMapper.convertValue(raw, this.objectMapper.getTypeFactory().constructCollectionType(List.class, RProductView.class));
         }
         return this.productInCatalogDocumentRepository.findByCategoryIdAndActiveTrue(category).stream().map(mapper::toView).toList();
     }
@@ -80,14 +72,11 @@ public class ProductCatalogRepositoryAdapter implements IProductCatalogRepositor
     @Override
     public List<RProductView> findActive() {
         log.info("Finding product by active true");
-        Cache cache = cacheManager.getCache(CACHE_PRODUCTS_ACTIVE);
+        Object raw = this.redisTemplate.opsForList().range(CACHE_PRODUCTS_ACTIVE, 0, -1);
 
-        if (cache != null) {
-            List<RProductView> productsCache = cache.get("all", List.class);
-            if (productsCache != null) {
-                log.info("Found active products in cache");
-                return productsCache;
-            }
+        if (raw != null) {
+            log.info("Found product by active in cache");
+            return this.objectMapper.convertValue(raw, this.objectMapper.getTypeFactory().constructCollectionType(List.class, RProductView.class));
         }
         return this.productInCatalogDocumentRepository.findByActiveTrueOrderByIdAsc().stream().map(mapper::toView).toList();
     }

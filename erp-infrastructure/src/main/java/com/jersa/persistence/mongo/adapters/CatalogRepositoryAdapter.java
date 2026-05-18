@@ -8,9 +8,9 @@ import com.jersa.views.RCatalogView;
 import com.jersa.views.RItemsView;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,20 +23,18 @@ import static com.jersa.constants.CacheConstants.*;
 public class CatalogRepositoryAdapter implements ICatalogRepositoryPort {
     private final ICatalogRepository repository;
     private final ICatalogMapper mapper;
-    private final CacheManager cacheManager;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final ObjectMapper objectMapper;
 
     @Override
     public Optional<RCatalogView> findByType(ECatalogType type) {
         log.info("Finding by type {}", type);
 
-        Cache cache = cacheManager.getCache(CACHE_CATALOGS_BY_TYPE);
-        if (cache != null) {
-            RCatalogView catalogCache = cache.get(type.name(), RCatalogView.class);
+        Object raw = this.redisTemplate.opsForValue().get(CACHE_CATALOGS_BY_TYPE + type.toString());
 
-            if (catalogCache != null) {
-                log.info("Found catalog in cache found: {} ", catalogCache);
-                return Optional.of(catalogCache);
-            }
+        if (raw != null) {
+            log.info("Cache found by type {}", type);
+            return Optional.of(this.objectMapper.convertValue(raw, RCatalogView.class));
         }
         return this.repository.findByCatalogType(type).map(mapper::toView);
     }
@@ -45,15 +43,12 @@ public class CatalogRepositoryAdapter implements ICatalogRepositoryPort {
     public List<RItemsView> findItemsByType(ECatalogType type) {
         log.info("Finding Items by type {}", type);
 
-        Cache cache = cacheManager.getCache(CACHE_CATALOGS_ITEMS);
+        Object raw = this.redisTemplate.opsForValue().get(CACHE_CATALOGS_BY_TYPE + type.name());
 
-        if (cache != null) {
-            List<RItemsView> itemsCache = cache.get(type.name(), List.class);
-
-            if (itemsCache != null) {
-                log.info("Found items in cache found, total : {} ", itemsCache.size());
-                return itemsCache;
-            }
+        if (raw != null) {
+            log.info("Cache found Items by type {}", type);
+            var cached = this.objectMapper.convertValue(raw, RCatalogView.class);
+            return cached.items();
         }
 
         return this.repository.findByCatalogType(type).map(doc -> doc.getItems().stream().map(mapper::toItemView).toList()).orElse(List.of());
