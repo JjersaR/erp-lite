@@ -11,6 +11,13 @@ spring:
       maximum-pool-size: 10
       minimum-idle: 5
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: jersa
+    password: jersaBP56
+    virtual-host: /
+
   # JPA / Hibernate
   jpa:
     hibernate:

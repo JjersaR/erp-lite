@@ -3,6 +3,7 @@ package com.jersa.use_cases.product;
 import com.jersa.commands.product.RCreateProductCommand;
 import com.jersa.entities.product.*;
 import com.jersa.exceptions.CommandException;
+import com.jersa.ports.messages.EventPublisherPort;
 import com.jersa.ports.repositories.IProductRepositoryPort;
 import com.jersa.ports.services.IImageStorageServicePort;
 import com.jersa.shared.RMoney;
@@ -24,11 +25,12 @@ import java.util.Currency;
  */
 @Slf4j
 @Service
-@Transactional
+@Transactional(noRollbackFor = RuntimeException.class)
 @RequiredArgsConstructor
 public class CreateProductUseCase {
     private final IProductRepositoryPort productRepository;
     private final IImageStorageServicePort imageStorageService;
+    private final EventPublisherPort eventPublisher;
 
     public String execute(RCreateProductCommand command) {
         log.info("Creating product with SKU: {}", command.sku());
@@ -66,7 +68,7 @@ public class CreateProductUseCase {
 
             log.info("Product persisted with ID: {}", savedProduct.getId().value());
 
-            // TODO: Handle domain events - Sync to MongoDB
+            this.sendEventMessage(product);
 
             return savedProduct.getId().value().toString();
 
@@ -106,6 +108,13 @@ public class CreateProductUseCase {
             log.error("Failed to upload new image", e);
             throw new CommandException("Failed to upload product image: " + e.getMessage());
         }
+    }
 
+    private void sendEventMessage(ProductRoot product) {
+        product.getDomainEvents().forEach(eventPublisher::publish);
+
+        product.clearDomainEvents();
+
+        log.info("Event send successfully");
     }
 }
