@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @Slf4j
 @SpringBootApplication
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class ErpApiApplication implements CommandLineRunner {
 
     static void main(String[] args) {
